@@ -93,4 +93,34 @@ public class ProgramaEducativoService {
             programa.setActivo(true);
             return programaEducativoRepository.save(programa);
         }
+
+    }
+
+    @Transactional
+    public ProgramaEducativoEntity editarPrograma(Integer id, ProgramaEducativoDTO dto) {
+        ProgramaEducativoEntity programa = programaEducativoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Programa no encontrado con ID: " + id));
+
+        if (dto.getIdDivision() != null) {
+            DivisionDTO division = divisionFeignClient.getDivisionById(dto.getIdDivision());
+            if (division == null) {
+                throw new RuntimeException("La división con ID " + dto.getIdDivision() + " no existe");
+            }
+
+            if (!programa.getDivisionProgramas().isEmpty()) {
+                DivisionProgramaEntity relacion = programa.getDivisionProgramas().get(0);
+                relacion.setIdDivision(dto.getIdDivision());
+            }
+        }
+
+        if (dto.getNombre() != null) {
+            programa.setNombre(dto.getNombre());
+        }
+        if (dto.getDescripcion() != null) {
+            programa.setDescripcion(dto.getDescripcion());
+        }
+
+        return programaEducativoRepository.save(programa);
+    }
+
 }

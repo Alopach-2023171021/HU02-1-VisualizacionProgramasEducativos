@@ -36,4 +36,12 @@ public class ProgramaEducativoController {
         return ResponseEntity.ok(programa);
     }
 
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ProgramaEducativoEntity> editar(
+            @PathVariable Integer id,
+            @RequestBody ProgramaEducativoDTO dto) {
+        ProgramaEducativoEntity programa = service.editarPrograma(id, dto);
+        return ResponseEntity.ok(programa);
+    }
 }
